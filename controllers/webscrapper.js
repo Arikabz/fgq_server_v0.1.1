@@ -112,7 +112,7 @@ module.exports ={
         try {
             const weekQ = await Week.find({Week:req.params.id}) 
             return res.status(200).json({
-                result: weekQ
+                result: weekQ,
             })
         } catch (error) {
             console.log(error)

@@ -7,10 +7,12 @@ const MongoStore = require("connect-mongo")(session);
 const methodOverride = require("method-override");
 const flash = require("express-flash");
 const logger = require("morgan");
+const cors = require("cors");
 const connectDB = require("./config/database");
 const mainRoutes = require("./routes/main");
 const webScrapperRoutes = require("./routes/webscrapper");
 const postRoutes = require("./routes/posts");
+
 
 //Use .env file in config folder
 require("dotenv").config({ path: "./config/.env" });
@@ -53,6 +55,8 @@ app.use(flash());
 app.use("/", mainRoutes);
 app.use("/post", postRoutes);
 app.use("/api", webScrapperRoutes);
+//Use cors
+app.use(cors());
 
 
 //Server Running
