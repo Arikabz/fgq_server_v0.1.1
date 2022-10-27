@@ -2,6 +2,21 @@ const axios = require("axios");
 const cheerio = require("cheerio");
 const Week = require("../models/Week");
 
+async function currentWeek (){
+    const url = 'https://www.cbssports.com/nfl/schedule/'
+    let dataArr = []
+    await axios(url).then((res)=>{
+        const html_data = res.data;
+        const $ = cheerio.load(html_data);
+
+        const weekSelector = '#PageTitle-header'
+
+        const weeknum = $(weekSelector).text().trim().split(' - ')[1]
+        console.log(weeknum)
+        dataArr.push(weeknum)
+    })
+    return dataArr
+}
 
 async function weekScrapper(num) {
     const url= `https://www.cbssports.com/nfl/schedule/2022/regular/${num}/`;
@@ -20,7 +35,7 @@ async function weekScrapper(num) {
             'Time',
             'TV',
             'Venue',
-            'Buy Tickets',
+            'Buy_Tickets',
         ];
 
         const keysHappened = [
@@ -73,6 +88,16 @@ async function weekScrapper(num) {
 }
 
 module.exports ={
+    getCurrentWeek: async (req,res) => {
+        try {
+            const weekN = await currentWeek();
+            return res.status(200).json({
+                result: weekN,
+            })
+        } catch (error) {
+            console.log(error)
+        }
+    },
     getSeason: async (req,res) => {
         try {
             let arr = []
@@ -117,7 +142,7 @@ module.exports ={
         } catch (error) {
             console.log(error)
             return res.status(500).json({
-                err:err.toString(),
+                err:error.toString(),
             })
         }
     }

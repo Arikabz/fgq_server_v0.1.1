@@ -23,6 +23,12 @@ require("./config/passport")(passport);
 //Connect To Database
 connectDB();
 
+//Use cors
+var corsOptions ={
+    origin: 'http://localhost:3000',
+    operationSuccessStatus: 200,
+}
+app.use(cors(corsOptions));
 
 //Body Parsing
 app.use(express.urlencoded({ extended: true }));
@@ -55,11 +61,9 @@ app.use(flash());
 app.use("/", mainRoutes);
 app.use("/post", postRoutes);
 app.use("/api", webScrapperRoutes);
-//Use cors
-app.use(cors());
 
 
 //Server Running
 app.listen(process.env.PORT, () => {
-  console.log("Server is running, you better catch it!");
+  console.log("Server is running, you better catch it! Port: "+process.env.PORT);
 });
