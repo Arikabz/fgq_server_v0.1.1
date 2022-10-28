@@ -7,6 +7,7 @@ const UserSchema = new mongoose.Schema({
     password: String,
     pfp: String,
     points: Number,
+    startingPoints: Number,
     accuracy: Number,
     groupID: String,
 });

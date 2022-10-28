@@ -108,7 +108,6 @@ module.exports ={
                 return await weekScrapper(x);
             })).then((values) => {
                     let dateUpdated = Date.now();
-                    console.log(values)
                     let parsedValues = values.map((y,e) => {
                         const week = {}
                         week.Week = e+1
@@ -124,7 +123,7 @@ module.exports ={
                         )
                     }))
                     return res.status(200).json({
-                        result: parsedValues,
+                        result: 'Data updated',
                     })
                 })
         } catch (err) {
