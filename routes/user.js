@@ -7,7 +7,7 @@ const usersController = require("../controllers/users");
 //Since linked from server js treat each path as:
 //post/:id, post/createPost, post/likePost/:id, post/deletePost/:id
 router.get("/:email", usersController.checkUser );
-router.get("/email/", usersController.checkUser );
+router.post("/email/checkAndRegister/:email/:userName", usersController.checkUser );
 router.post("/edit/:email", usersController.checkUser);
 
 module.exports = router;
