@@ -12,7 +12,7 @@ async function currentWeek (){
         const weekSelector = '#PageTitle-header'
 
         const weeknum = $(weekSelector).text().trim().split(' - ')[1]
-        console.log(weeknum)
+        console.log('weeknum: '+ weeknum)
         dataArr.push(weeknum)
     })
     return dataArr
