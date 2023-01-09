@@ -2,26 +2,58 @@
 
 const User = require("../models/User");
 
-exports.checkUser = (req, res, next) => {
+exports.checkUser = async (req, res, next) => {
+    try {
+        const user = new User({
+            email: req.body.email,
+            userName: req.body.userName,
+        });
+        if (!user.email || !user.userName){
+            console.log('Undefined fields')
+            return
+        }
 
-  const user = new User({
-    email: req.body.email,
-    userName: req.body.userName,
-  });
-    console.log('here')
+        const response = await User.findOne(
+            {'email': user.email},
+            (err, existingUser) => {
+                if (err) {
+                    console.log(err)
+                            res.setHeader('Content-Type','application/json');
+                            res.end(JSON.stringify({
+                                firstTime: false,
+                            }))
+                    return (err);
+                }
+                else if (existingUser) {
+                    console.log( "Account with that email address or username already exists.")
+                            res.setHeader('Content-Type','application/json');
+                            res.end(JSON.stringify({
+                                firstTime: false,
+                            }))
+                    return  "Account with that email address or username already exists."
+                } else{
+                    User.create(user, function(err, doc){
+                        if(err) {
+                            console.log('Account with that email address or username already exists.')
+                            res.setHeader('Content-Type','application/json');
+                            res.end(JSON.stringify({
+                                firstTime: false,
+                            }))
+                            return 'Account with that email address or username already exists.' 
+                        } else if(!err){
+                            console.log('user has been created')
+                            console.log(doc)
+                            res.setHeader('Content-Type','application/json');
+                            res.end(JSON.stringify({
+                                firstTime: true,
+                            }))
+                        }
+                    })
+                }
+            }
+        );
 
-  User.findOne(
-    { $or: [{ email: req.body.email }, { userName: req.body.userName }] },
-    (err, existingUser) => {
-      if (err) {
-        return next(err);
-      }
-      if (existingUser) {
-        console.log( "Account with that email address or username already exists.")
-        return  "Account with that email address or username already exists."
-      }
-        User.create(user)
-        console.log('user has been created')
+    } catch (error) {
+        console.log(error)
     }
-  );
 }
