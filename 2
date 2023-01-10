@@ -16,6 +16,7 @@ async function currentWeek (){
         console.log('weeknum: '+ weeknum)
         const dataArr = [weeknum]
         const weekNumber = Number(dataArr[0].split(' ')[1])
+        console.log(weekNumber)
         let doc = await CurrentWeek.findOneAndUpdate({CurrentWeek: weekNumber},{
             CurrentWeek: weekNumber,
             updatedAt: Date.now(),
@@ -24,6 +25,7 @@ async function currentWeek (){
                 upsert:true,
             }
         )
+        console.log(doc)
         return dataArr
     } catch (error) {
         console.log(error)
@@ -32,7 +34,7 @@ async function currentWeek (){
 
 async function weekScrapper(num) {
 
-    const url= num >18 ? `https://www.cbssports.com/nfl/schedule/2022/postseason/${num}` : `https://www.cbssports.com/nfl/schedule/2022/regular/${num}/`;
+    const url= `https://www.cbssports.com/nfl/schedule/2022/regular/${num}/`;
     const dataArray = [];
     const res = await axios(url);
         const html_data = res.data;
@@ -114,15 +116,18 @@ module.exports ={
         try {
             const currentWeek = await CurrentWeek.find({}).sort({updatedAt: -1})
             const maxWeek = await currentWeek[0].CurrentWeek;
+            const maximusWeekius = () => {
+                console.log('maxWeek =' + maxWeek)
+                return maxWeek > 18 ? maxWeek : 18
+            }
             const makeArray = () => {
-                const top = maxWeek>18 ? maxWeek: 18;
                 let arrr = []
-                for (let i = 1; i <= top; i++){
+                for (let i = 1; i <= maximusWeekius; i++){
                     arrr.push(i)
                 }
                 return arrr
             }
-            let arr = makeArray()
+            let arr = makeArray
             Promise.all(arr.map(async x=>{
                 return await weekScrapper(x);
             })).then((values) => {
@@ -146,7 +151,6 @@ module.exports ={
                     })
                 })
         } catch (err) {
-            console.log(err)
             return res.status(500).json({
                 err: err.toString(),
             });
