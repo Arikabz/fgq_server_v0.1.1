@@ -12,7 +12,7 @@ const UserSchema = new mongoose.Schema({
     points: Number,
     startingPoints: Number,
     accuracy: Number,
-    groupID: String,
+    leagueID: String,
 });
 
 // Password hash middleware.
