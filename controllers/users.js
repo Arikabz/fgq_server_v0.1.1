@@ -37,11 +37,8 @@ exports.registerUserInLeague = async (req,res,next) => {
                 leagueID: leagueID,
             }
         )
-        console.log(userDoc)
-        console.log('Added to league.')
-        console.log(leagueData)
         const userArr = await leagueData.users
-        userArr.push(email)
+        userArr.push(userDoc)
         const leagueRes = await League.findOneAndUpdate(
             {leagueID: leagueID},
             {
@@ -61,6 +58,21 @@ exports.registerUserInLeague = async (req,res,next) => {
     }
 }
 
+exports.getLeagueUsers = async (req,res,next) => {
+    try {
+        const leagueID = req.body.leagueID
+        const response = await User.find(
+            {'leagueID': leagueID},
+        ).sort({points:-1})
+            res.setHeader('Content-Type','application/json');
+            res.end(JSON.stringify({
+                leagueMembers: response,
+            }))
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 exports.getUserInfo = async (req,res,next) => {
     try {
         const email = req.body.email;
@@ -68,23 +80,22 @@ exports.getUserInfo = async (req,res,next) => {
             {'email': email},
         )
         if(response.leagueID) {
-            const leagueData = await League.findOne(
-                {leagueID: response.leagueID}
-            )
-            console.log(leagueData)
+            //console.log(leagueData)
             res.setHeader('Content-Type','application/json');
             res.end(JSON.stringify({
                 registered: true,
-                leagueData: leagueData,
+                userData: response
+                //leagueData: leagueData,
             }))
         } else{
             console.log('Not in league yet.')
             res.setHeader('Content-Type','application/json');
             res.end(JSON.stringify({
                 registered: false,
+                userData: response,
             }))
         }
-        console.log(response)
+        //console.log(response)
     } catch (error) {
         console.log(error)
     }
@@ -95,6 +106,7 @@ exports.checkUser = async (req, res, next) => {
         const user = new User({
             email: req.body.email,
             userName: req.body.userName,
+            points: 0,
         });
         if (!user.email || !user.userName){
             console.log('Undefined fields')
@@ -130,7 +142,7 @@ exports.checkUser = async (req, res, next) => {
                             return 'Account with that email address or username already exists.' 
                         } else if(!err){
                             console.log('user has been created')
-                            console.log(doc)
+                            //console.log(doc)
                             res.setHeader('Content-Type','application/json');
                             res.end(JSON.stringify({
                                 firstTime: true,

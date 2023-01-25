@@ -8,6 +8,7 @@ const usersController = require("../controllers/users");
 //post/:id, post/createPost, post/likePost/:id, post/deletePost/:id
 router.get("/:email", usersController.checkUser );
 router.post("/getUserInfo", usersController.getUserInfo );
+router.post("/getLeagueUsers", usersController.getLeagueUsers );
 router.post("/checkAndRegister", usersController.checkUser );
 router.post("/registerUserInLeague", usersController.registerUserInLeague );
 router.post("/edit/:email", usersController.checkUser);
