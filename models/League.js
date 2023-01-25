@@ -16,6 +16,10 @@ const LeagueSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+    admin: {
+        type: String,
+        require: true,
+    }
 });
 
 //MongoDB Collection named here - will give lowercase plural of name 

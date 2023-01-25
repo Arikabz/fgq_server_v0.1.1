@@ -13,6 +13,7 @@ const UserSchema = new mongoose.Schema({
     startingPoints: Number,
     accuracy: Number,
     leagueID: String,
+    admin: Boolean,
 });
 
 // Password hash middleware.

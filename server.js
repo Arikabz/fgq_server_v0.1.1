@@ -16,6 +16,7 @@ const apiRoutes = require("./routes/webscrapper");
 const userRoutes = require("./routes/user");
 const postRoutes = require("./routes/posts");
 const leagueRoutes = require("./routes/league");
+const predictionsRoutes = require("./routes/predictions");
 
 
 //Use .env file in config folder
@@ -80,6 +81,7 @@ app.use("/post", postRoutes);
 app.use("/user", checkJwt, userRoutes);
 app.use("/api", checkJwt, apiRoutes);
 app.use("/league", checkJwt, leagueRoutes);
+app.use("/predictions", checkJwt, predictionsRoutes);
 
 
 //Server Running

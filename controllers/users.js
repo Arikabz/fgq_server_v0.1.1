@@ -35,6 +35,7 @@ exports.registerUserInLeague = async (req,res,next) => {
         const userDoc = await User.findOneAndUpdate(
             {email: email},{
                 leagueID: leagueID,
+                admin: false,
             }
         )
         const userArr = await leagueData.users

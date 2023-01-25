@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const PredictionSchema = new mongoose.Schema({
-  groupID: {
+  leagueID: {
     type: String,
     required: true,
   },
@@ -9,16 +9,12 @@ const PredictionSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  predictionAssessment: {
-    type: Object,
-    require: true,
-  },
-  prediction: {
+  predictions: {
     type: Object,
     require: true,
   },
   user: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: String,
     ref: "User",
   },
   createdAt: {

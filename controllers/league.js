@@ -16,10 +16,19 @@ exports.createLeague = async (req,res,next) => {
         const email = req.body.email;
         const leagueID = makeid(8);
         console.log('Generated ID: ' + leagueID)
+        const userResponse = await User.findOneAndUpdate(
+            {email: email},
+            {
+                leagueID: leagueID,
+                admin: true,
+            }
+        )
+        console.log(userResponse)
         const leagueRes = await League.create(
             {
                 leagueID: leagueID,
-                users: [email]
+                users: [userResponse],
+                admin: userResponse._id
             }, (err, doc) =>{
                 if(err){
                     console.log(err)
@@ -27,12 +36,6 @@ exports.createLeague = async (req,res,next) => {
             }
         )
         console.log(leagueRes)
-        const userResponse = await User.findOneAndUpdate(
-            {email: email},
-            {
-                leagueID: leagueID,
-            }
-        )
         console.log('New league created succesfully.')
         res.setHeader('Content-Type','application/json');
         res.end(JSON.stringify({
