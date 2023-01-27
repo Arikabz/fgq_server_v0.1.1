@@ -34,7 +34,7 @@ exports.makePredictionTemplate = async (req,res,next) => {
                 }
                 if(doc){
                     console.log('Existing prediction document found.')
-                    console.log(doc)
+                    //console.log(doc)
                     res.setHeader('Content-Type','application/json');
                     res.end(JSON.stringify({
                         predictionTemplate: doc,

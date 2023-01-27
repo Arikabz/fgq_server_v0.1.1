@@ -14,8 +14,12 @@ async function currentWeek (){
         const weekSelector = '#PageTitle-header'
         const weeknum = $(weekSelector).text().trim().split(' - ')[1]
         console.log('weeknum: '+ weeknum)
-        const dataArr = [weeknum]
-        const weekNumber = Number(dataArr[0].split(' ')[1])
+        let dataArr = [weeknum]
+        let weekNumber = Number(dataArr[0].split(' ')[1])
+        if(!Number(weekNumber)){
+            weekNumber = 21;
+            dataArr = ['Week 21']
+        }
         let doc = await CurrentWeek.findOneAndUpdate({CurrentWeek: weekNumber},{
             CurrentWeek: weekNumber,
             updatedAt: Date.now(),
