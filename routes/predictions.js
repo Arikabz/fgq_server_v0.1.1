@@ -6,5 +6,6 @@ const predictionsController = require("../controllers/predictions");
 //Since linked from server js treat each path as:
 //post/:id, post/createPost, post/likePost/:id, post/deletePost/:id
 router.post("/makePredictionTemplate", predictionsController.makePredictionTemplate );
+router.post("/uploadSinglePrediction", predictionsController.uploadSinglePrediction );
 
 module.exports = router;

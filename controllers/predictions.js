@@ -4,6 +4,30 @@ const Week = require("../models/Week");
 const Prediction = require("../models/Prediciton");
 const Prediciton = require("../models/Prediciton");
 
+exports.uploadSinglePrediction = async (req,res,next) => {
+    try {
+        const userID = req.body.userID;
+        const weekNum = req.body.weeknum
+        const leagueID = req.body.leagueID;
+        const gameNum = req.body.gameNum;
+        const awayGuess = req.body.awayGuess;
+        const homeGuess = req.body.homeGuess;
+        const weekDoc = await Prediction.findOneAndUpdate(
+            {
+                user: userID,
+                leagueID: leagueID,
+                weekNum: weekNum,
+            },
+            {
+//update here
+            }
+        )
+        //console.log(predictionDoc)
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 exports.makePredictionTemplate = async (req,res,next) => {
     try {
         const userID = req.body.userID;
