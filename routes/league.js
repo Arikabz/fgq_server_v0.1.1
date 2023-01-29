@@ -7,5 +7,6 @@ const leagueController = require("../controllers/league");
 //Since linked from server js treat each path as:
 //post/:id, post/createPost, post/likePost/:id, post/deletePost/:id
 router.post("/createLeague", leagueController.createLeague);
+router.post("/updatePoints", leagueController.updatePoints);
 
 module.exports = router;

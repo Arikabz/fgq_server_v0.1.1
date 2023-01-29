@@ -12,17 +12,37 @@ exports.uploadSinglePrediction = async (req,res,next) => {
         const gameNum = req.body.gameNum;
         const awayGuess = req.body.awayGuess;
         const homeGuess = req.body.homeGuess;
-        const weekDoc = await Prediction.findOneAndUpdate(
-            {
+        const filter = {
                 user: userID,
                 leagueID: leagueID,
                 weekNum: weekNum,
-            },
+        };
+        
+        
+
+        const weekDoc = await Prediction.findOne(filter)
+        let predictionObj = weekDoc.predictions[gameNum-1];
+        predictionObj.awayPrediction=awayGuess;
+        predictionObj.homePrediction=homeGuess;
+        weekDoc.predictions[gameNum-1]=predictionObj;
+        //console.log(weekDoc)
+        const predictionUpdate = await Prediction.findOneAndUpdate(filter,
             {
+                predictions: weekDoc.predictions
 //update here
             }
         )
-        //console.log(predictionDoc)
+        if(predictionUpdate){
+            res.setHeader('Content-Type','application/json');
+            res.end(JSON.stringify({
+                update: true,
+            }))
+        } else {
+            res.setHeader('Content-Type','application/json');
+            res.end(JSON.stringify({
+                update: false,
+            }))
+        }
     } catch (error) {
         console.log(error)
     }

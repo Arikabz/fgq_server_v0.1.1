@@ -2,6 +2,7 @@
 const User = require("../models/User");
 const League = require("../models/League");
 
+
 exports.registerUserInLeague = async (req,res,next) => {
     try {
         const email = req.body.email;
