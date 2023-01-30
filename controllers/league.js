@@ -13,6 +13,23 @@ function makeid(length) {
     return result;
 }
 
+const getInitials = (result) => {
+    if(result.includes(' ')){
+        let splitSpaces = result.split(' ').map(x=> {
+            if(!x.includes('.')){
+                return x.charAt()
+            }else {return x}
+        }).join('')
+        if(splitSpaces.includes('.')){
+            return splitSpaces.split('').filter(x=> x!=='.').join('')
+        } else{
+            return splitSpaces
+        }
+
+    } else{
+        return result.toUpperCase().slice(0,3)
+    }
+}
 exports.updatePoints = async (req,res,next) => {
     try {
         const leagueID = req.body.leagueID;
@@ -21,29 +38,50 @@ exports.updatePoints = async (req,res,next) => {
         )
         const allWeeks = await Week.find({}).lean()
         const userArr = leagueDoc.users;
+        const userArrUpdated = await Promise.all(userArr.map(x=>{
+            return User.findOne({_id: x._id})
+        }))
         let updatedUserArr = []
         const predictions = await Promise.all(userArr.map(x=>{
             return Prediction.find({user:x._id}).lean()
         }))
         predictions.forEach((x,i)=>{
-            const user = userArr[i];
+            const user = userArrUpdated[i];
             let points = 0;
             x.forEach((y,i2)=>{
                 const results = allWeeks.find(e=> e.Week === y.weekNum).Games.map(a=> a.result || a.Venue)
                 //console.log(results)
                 y.predictions.forEach((z,i3)=>{
                     if(z.awayPrediction&&z.homePrediction){
-                        const result = (results[i3].replace(/([A-Z]|\s)/g,'').split('-').map(b=>Number(b)))
+                        const result = (results[i3].replace(/([A-Z]|\s|[\/])/g,'').split('-').map(b=>Number(b)))
+                        console.log(result)
                         if(Number(result[0])){
+                            const resultArr = results[i3].split(' ')
+                            const awayInitials = getInitials(z.Away)
+                            let awayResult;
+                            let homeResult;
+
+                            if(awayInitials === resultArr[0]){
+                                awayResult = result[0]
+                                homeResult = result[1]
+                                console.log('away: '+awayResult+', home: '+homeResult)
+                            }else {
+                                awayResult = result[1]
+                                homeResult = result[0]
+                                console.log('away: '+awayResult+', home: '+homeResult)
+                            }
+                            console.log(user.userName)
+                            console.log(results[i3])
+                            console.log('prediction:')
                             console.log(z.Away+' : '+z.awayPrediction+' - '+z.Home+' : '+ z.homePrediction)
-                            const awayResult = result[0]
-                            const homeResult = result[1]
                             const guessedScore = z.awayPrediction == awayResult && z.homePrediction == homeResult;
-                            const guessedRight = (z.awayPrediction < z.homePrediction) === (awayResult < homeResult)
+                            const guessedRight = (z.awayPrediction < z.homePrediction) == (awayResult < homeResult)
                             if(guessedScore){
                                 points += 5
+                                console.log('+5 points')
                             } else if( guessedRight ){
                                 points += 1
+                                console.log('+1 point')
                             }
                             console.log('got score: '+ guessedScore)
                             console.log('guessed right: '+ guessedRight)
@@ -52,7 +90,11 @@ exports.updatePoints = async (req,res,next) => {
                     }
                 })
             })
-            user.points = points
+            const extra = user.extraPoints || 0;
+            user.seasonPoints = points;
+            user.points = points + extra;
+            console.log('seasonPoints: '+ user.seasonPoints)
+            console.log('userpoints: '+ user.points)
             updatedUserArr.push(user)
             console.log('user: '+ user.userName)
             console.log('points: '+ user.points)
@@ -67,6 +109,7 @@ exports.updatePoints = async (req,res,next) => {
             return User.findOneAndUpdate({_id: u._id},
                 {
                     points: u.points,
+                    seasonPoints: u.seasonPoints,
                 })
         }))
         if(updatedLeague&&updatedUsers){

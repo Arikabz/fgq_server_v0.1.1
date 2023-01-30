@@ -82,6 +82,7 @@ exports.makePredictionTemplate = async (req,res,next) => {
                     res.setHeader('Content-Type','application/json');
                     res.end(JSON.stringify({
                         predictionTemplate: doc,
+                        new: false,
                     }))
                 }
             }
@@ -102,7 +103,8 @@ exports.makePredictionTemplate = async (req,res,next) => {
                         console.log(doc)
                         res.setHeader('Content-Type','application/json');
                         res.end(JSON.stringify({
-                            predictions: newPredictionDoc,
+                            predictionTemplate: doc,
+                            new: true,
                         }))
                     }
                 }

@@ -10,6 +10,8 @@ const UserSchema = new mongoose.Schema({
     },
     pfp: String,
     points: Number,
+    seasonPoints: Number,
+    extraPoints: Number,
     startingPoints: Number,
     accuracy: Number,
     leagueID: String,

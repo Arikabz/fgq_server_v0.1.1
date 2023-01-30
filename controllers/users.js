@@ -1,6 +1,7 @@
 // just a copy of auth.js
 const User = require("../models/User");
 const League = require("../models/League");
+const PointsEdit = require("../models/PointsEdit");
 
 
 exports.registerUserInLeague = async (req,res,next) => {
@@ -55,6 +56,33 @@ exports.registerUserInLeague = async (req,res,next) => {
             leagueID: leagueID,
         }))
         }
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+exports.editExtraPoints = async (req,res,next) => {
+    try {
+        const userID = req.body.userID
+        const points = req.body.points
+        const reason = req.body.reason
+        const userDoc = await User.findOneAndUpdate({_id:userID},
+            {
+                $inc: {extraPoints: points}
+            })
+        const pointsDoc = await PointsEdit.create(
+            {
+                userID: userID,
+                points: points,
+                reason: reason,
+            }
+        )
+        console.log(userDoc)
+        console.log(pointsDoc)
+            res.setHeader('Content-Type','application/json');
+            res.end(JSON.stringify({
+                update: true,
+            }))
     } catch (error) {
         console.log(error)
     }

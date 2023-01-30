@@ -11,6 +11,7 @@ router.post("/getUserInfo", usersController.getUserInfo );
 router.post("/getLeagueUsers", usersController.getLeagueUsers );
 router.post("/checkAndRegister", usersController.checkUser );
 router.post("/registerUserInLeague", usersController.registerUserInLeague );
+router.post("/editExtraPoints", usersController.editExtraPoints );
 router.post("/edit/:email", usersController.checkUser);
 
 module.exports = router;
