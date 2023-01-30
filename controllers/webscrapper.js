@@ -17,8 +17,13 @@ async function currentWeek (){
         let dataArr = [weeknum]
         let weekNumber = Number(dataArr[0].split(' ')[1])
         if(!Number(weekNumber)){
-            weekNumber = 21;
-            dataArr = ['Week 21']
+            if(weeknum=='Championship'){
+                weekNumber = 21;
+                dataArr = ['Week 21']
+            } else {
+                weekNumber = 23;
+                dataArr = ['Week 23']
+            }
         }
         let doc = await CurrentWeek.findOneAndUpdate({CurrentWeek: weekNumber},{
             CurrentWeek: weekNumber,
@@ -39,67 +44,67 @@ async function weekScrapper(num) {
     const url= num >18 ? `https://www.cbssports.com/nfl/schedule/2022/postseason/${num}` : `https://www.cbssports.com/nfl/schedule/2022/regular/${num}/`;
     const dataArray = [];
     const res = await axios(url);
-        const html_data = res.data;
-        const $ = cheerio.load(html_data);
+    const html_data = res.data;
+    const $ = cheerio.load(html_data);
 
 
-        const diffSelector = 'div.TableBaseWrapper  tr.TableBase-bodyTr'
-        const keysFuture = [
-            'AwayLogo',
-            'Away',
-            'HomeLogo',
-            'Home',
-            'Time',
-            'TV',
-            'Venue',
-            'Buy_Tickets',
-        ];
+    const diffSelector = 'div.TableBaseWrapper  tr.TableBase-bodyTr'
+    const keysFuture = [
+        'AwayLogo',
+        'Away',
+        'HomeLogo',
+        'Home',
+        'Time',
+        'TV',
+        'Venue',
+        'Buy_Tickets',
+    ];
 
-        const keysHappened = [
-            'AwayLogo',
-            'Away',
-            'HomeLogo',
-            'Home',
-            'result',
-            'gameInfo',
-        ];
+    const keysHappened = [
+        'AwayLogo',
+        'Away',
+        'HomeLogo',
+        'Home',
+        'result',
+        'gameInfo',
+    ];
 
 
-        $(diffSelector).each((parentIndex, parentElem) => {
-            let keyIndex = 0;
-            const gameDetails = {};
-            if (parentIndex <=15){
-                let keys;
-                if($(parentElem).children().length>3){
-                    keys = keysFuture;
-                }
-                else{
-                    keys = keysHappened
-                }
-                $(parentElem).children().each((childId, childElem) => {
-                    const value = $(childElem).text().trim();
-                    const img = $(childElem).find('figure').find('img').attr('data-lazy');
-                    const gameInfo = 'https://www.cbssports.com' + $(childElem).find('.CellGame').find('a').attr('href');
-                    if(childId<2){
-                        gameDetails[keys[keyIndex]] = img;
-                        keyIndex++ 
-                        gameDetails[keys[keyIndex]] = value;
-                        keyIndex++ 
-                    }
-                    else if(keys===keysHappened){
-                        gameDetails[keys[keyIndex]] = value;
-                        keyIndex++ 
-                        gameDetails[keys[keyIndex]] = gameInfo;
-                        keyIndex++ 
-                    }
-                    else if (value){
-                        gameDetails[keys[keyIndex]] = value;
-                        keyIndex++ 
-                    }
-                });
-                dataArray.push(gameDetails);
+    $(diffSelector).each((parentIndex, parentElem) => {
+        let keyIndex = 0;
+        const gameDetails = {};
+        if (parentIndex <=15){
+            let keys;
+            if($(parentElem).children().length>3){
+                keys = keysFuture;
             }
-        })
+            else{
+                keys = keysHappened
+            }
+            $(parentElem).children().each((childId, childElem) => {
+                const value = $(childElem).text().trim();
+                const img = $(childElem).find('figure').find('img').attr('data-lazy');
+                const gameInfo = 'https://www.cbssports.com' + $(childElem).find('.CellGame').find('a').attr('href');
+                if(childId<2){
+                    gameDetails[keys[keyIndex]] = img;
+                    keyIndex++ 
+                    gameDetails[keys[keyIndex]] = value;
+                    keyIndex++ 
+                }
+                else if(keys===keysHappened){
+                    gameDetails[keys[keyIndex]] = value;
+                    keyIndex++ 
+                    gameDetails[keys[keyIndex]] = gameInfo;
+                    keyIndex++ 
+                }
+                else if (value){
+                    gameDetails[keys[keyIndex]] = value;
+                    keyIndex++ 
+                }
+            });
+            dataArray.push(gameDetails);
+        }
+    })
     return dataArray;
 }
 
