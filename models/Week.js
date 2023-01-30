@@ -9,6 +9,9 @@ const WeekSchema = new mongoose.Schema({
     type: Array,
     require: true,
   },
+  dates: {
+    type: Array,
+  },
   updatedAt: {
     type: Date,
     default: Date.now,

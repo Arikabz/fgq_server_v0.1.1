@@ -46,7 +46,20 @@ async function weekScrapper(num) {
     const res = await axios(url);
     const html_data = res.data;
     const $ = cheerio.load(html_data);
+    const thursdaySelector = 'div.TableBase>h4'
+    const dateArr = []
 
+    $(thursdaySelector).each((parentIndex,parentElem)=>{
+        //console.log(parentElem.text().trim())
+        $(parentElem).each((childId, childElem)=>{
+            const x = $(childElem).text().trim().split(' ').map((y,i)=>{
+                return i > 0 ? y : '';
+            }).join(' ')
+            const date = new Date(Date.parse(x));
+            //console.log(date.toDateString())
+            dateArr.push(date)
+        })
+    })
 
     const diffSelector = 'div.TableBaseWrapper  tr.TableBase-bodyTr'
     const keysFuture = [
@@ -105,7 +118,7 @@ async function weekScrapper(num) {
             dataArray.push(gameDetails);
         }
     })
-    return dataArray;
+    return [dataArray, dateArr];
 }
 
 module.exports ={
@@ -127,7 +140,9 @@ module.exports ={
                 const top = maxWeek>18 ? maxWeek: 18;
                 let arrr = []
                 for (let i = 1; i <= top; i++){
-                    arrr.push(i)
+                    if(i!==22){
+                        arrr.push(i)
+                    }
                 }
                 return arrr
             }
@@ -138,15 +153,24 @@ module.exports ={
                     let dateUpdated = Date.now();
                     let parsedValues = values.map((y,e) => {
                         const week = {}
-                        week.Week = e+1
-                        week.Games = y
+                        if(e==21){
+                            week.Week = 23
+                        }
+                        else {
+                            week.Week = e+1
+                        }
+                        week.Games = y[0]
+                        week.dates = y[1]
                         return week;
                     })
                     Promise.all(parsedValues.map(async x=>{
                         await Week.findOneAndUpdate(
                             {Week: x.Week},
-                            {Games: x.Games,
-                                updatedAt: dateUpdated},
+                            {
+                                Games: x.Games,
+                                updatedAt: dateUpdated,
+                                dates: x.dates
+                            },
                             {upsert: true}
                         )
                     }))
