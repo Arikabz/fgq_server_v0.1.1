@@ -54,7 +54,7 @@ exports.updatePoints = async (req,res,next) => {
                 y.predictions.forEach((z,i3)=>{
                     if(z.awayPrediction&&z.homePrediction){
                         const result = (results[i3].replace(/([A-Z]|\s|[\/])/g,'').split('-').map(b=>Number(b)))
-                        console.log(result)
+                        //console.log(result)
                         if(Number(result[0])){
                             const resultArr = results[i3].split(' ')
                             const awayInitials = getInitials(z.Away)
@@ -70,8 +70,8 @@ exports.updatePoints = async (req,res,next) => {
                                 homeResult = result[0]
                                 console.log('away: '+awayResult+', home: '+homeResult)
                             }
-                            console.log(user.userName)
-                            console.log(results[i3])
+                            //console.log(user.userName)
+                            //console.log(results[i3])
                             console.log('prediction:')
                             console.log(z.Away+' : '+z.awayPrediction+' - '+z.Home+' : '+ z.homePrediction)
                             const guessedScore = z.awayPrediction == awayResult && z.homePrediction == homeResult;
@@ -93,11 +93,11 @@ exports.updatePoints = async (req,res,next) => {
             const extra = user.extraPoints || 0;
             user.seasonPoints = points;
             user.points = points + extra;
-            console.log('seasonPoints: '+ user.seasonPoints)
-            console.log('userpoints: '+ user.points)
+            //console.log('seasonPoints: '+ user.seasonPoints)
+            //console.log('userpoints: '+ user.points)
             updatedUserArr.push(user)
-            console.log('user: '+ user.userName)
-            console.log('points: '+ user.points)
+            //console.log('user: '+ user.userName)
+            //console.log('points: '+ user.points)
         })
         const updatedLeague = await League.findOneAndUpdate(
             {leagueID: leagueID},
