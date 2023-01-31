@@ -35,7 +35,7 @@ var corsOptions ={
     origin: 'https://fgq.up.railway.app/',
     operationSuccessStatus: 200,
 }
-app.use(cors(corsOptions));
+app.use(cors());
 
 //Body Parsing
 app.use(express.urlencoded({ extended: true }));
