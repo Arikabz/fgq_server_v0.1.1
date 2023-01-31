@@ -32,7 +32,7 @@ connectDB();
 
 app.use(helmet());
 var corsOptions ={
-    origin: 'http://localhost:3000',
+    origin: 'https://fgq.netlify.app/',
     operationSuccessStatus: 200,
 }
 app.use(cors(corsOptions));
