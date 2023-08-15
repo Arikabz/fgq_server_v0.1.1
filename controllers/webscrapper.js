@@ -19,7 +19,8 @@ async function currentWeek (){
 }
 
 async function weekScrapper(num) {
-    const url= `https://www.cbssports.com/nfl/schedule/2022/regular/${num}/`;
+    const year = new Date().getFullYear();
+    const url= `https://www.cbssports.com/nfl/schedule/${year}/regular/${num}/`;
     const dataArray = [];
     await axios(url).then((res)=>{
         const html_data = res.data;
@@ -134,9 +135,9 @@ module.exports ={
     },
     getWeek: async (req,res) => {
         try {
-            const weekQ = await Week.find({Week:req.params.id}) 
+            const weekQ = await Week.find({Week:req.params.id}).lean(); 
             return res.status(200).json({
-                result: weekQ,
+                result: weekQ[0],
             })
         } catch (error) {
             console.log(error)

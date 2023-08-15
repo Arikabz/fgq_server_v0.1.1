@@ -23,6 +23,7 @@ require("./config/passport")(passport);
 //Connect To Database
 connectDB();
 
+
 //Use cors
 var corsOptions ={
     origin: 'http://localhost:3000',
