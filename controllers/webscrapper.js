@@ -92,6 +92,8 @@ module.exports ={
     getCurrentWeek: async (req,res) => {
         try {
             const weekN = await currentWeek();
+            res.setHeader('Content-Type', 'application/json')
+            res.setHeader('Access-Control-Allow-Origin', '*');
             return res.status(200).json({
                 result: weekN,
             })
@@ -136,6 +138,8 @@ module.exports ={
     getWeek: async (req,res) => {
         try {
             const weekQ = await Week.find({Week:req.params.id}).lean(); 
+            res.setHeader('Content-Type', 'application/json')
+            res.setHeader('Access-Control-Allow-Origin', '*');
             return res.status(200).json({
                 result: weekQ[0],
             })
